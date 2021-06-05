@@ -733,6 +733,7 @@ std::string G13_Manager::make_pipe_name( G13_Device *d, bool is_input ) {
 	}
 }
 
+// TODO have this function return 
 int G13_Manager::run() {
 
 	init_keynames();
@@ -747,7 +748,11 @@ int G13_Manager::run() {
 		return 1;
 	}
 
-	libusb_set_debug(ctx, 3);
+	//libusb_set_debug(ctx, 3);
+	if (libusb_set_option(ctx, LIBUSB_OPTION_LOG_LEVEL, 3) != LIBUSB_SUCCESS) {
+		G13_LOG( error, "Error setting the libusb log level");
+	}
+
 	cnt = libusb_get_device_list(ctx, &devs);
 	if (cnt < 0) {
 		G13_LOG( error, "Error while getting device list" );
@@ -788,6 +793,7 @@ int G13_Manager::run() {
 			}
 	} while (running);
 	cleanup();
+	return 0;
 }
 } // namespace G13
 
